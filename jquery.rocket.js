@@ -73,7 +73,7 @@
                     //var _overflow_state = rocket.parent().css('overflow');
                     var _width = $('body').width();
                     //var _height = $(window).height();
-                    var _height = $('body').height();
+                    var _height = Math.max($('body').height(), $(window).height());
                     fire.css('opacity', 0);
                     //rocket.parent().css('overflow', 'hidden');
                     //rocket.parent().css('overflow', _overflow_state);
