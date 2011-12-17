@@ -82,16 +82,17 @@
                         .delay(200)
                         .animate({left:'-=' + (_width - 250)}, 1000)
                         .animate({left: '+=25'}, 200, function() {
-                                _propulsion = true;
-                                propulsion();
-                                fire.animate({opacity: '+=100'}, 1000);
-                                rocket
-                                    .delay(2000)
-                                    .animate({'left':'+=' + _width, "top": '-=' + (_height + 375)}, 5000,
-                                             function() {
-                                                 _propulsion = false;
-                                                 _started = false;
-                                             });
+                                fire.delay(100).animate({opacity: '+=1'}, 300, function() {
+                                        _propulsion = true;
+                                        propulsion();
+                                        rocket
+                                            .delay(2000)
+                                            .animate({'left':'+=' + _width, "top": '-=' + (_height + 375)}, 5000,
+                                                     function() {
+                                                         _propulsion = false;
+                                                         _started = false;
+                                                     });
+                                    });
                             });
                 }
 
