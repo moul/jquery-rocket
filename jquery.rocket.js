@@ -110,7 +110,8 @@
                 } else if(options.enterOn == 'konami-code'){
                     var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
                     $(window).bind("keydown.rocketz", function(e){
-                            $("html").scrollTop();
+                            //$("html").scrollTop();
+                            scroll(0, 0);
                             kkeys.push(e.keyCode);
                             if (kkeys.toString().indexOf(konami) >= 0) {
                                 init();
