@@ -40,7 +40,7 @@
                         height: 80,
                         background: 'url("' + options.base_url + 'img/steam.png") no-repeat',
                         opacity: 0.8,
-                        display: 'none'
+                        display: 'none';
                     });
 
                 function propulsion() {
@@ -68,11 +68,11 @@
                         return ;
                     }
                     _started = true;
-                    var _overflow_state = rocket.parent().css('overflow');
+                    //var _overflow_state = rocket.parent().css('overflow');
                     var _width = $(window).width();
                     var _height = $(window).height();
                     fire.css('opacity', 0);
-                    rocket.parent().css('overflow', 'hidden');
+                    //rocket.parent().css('overflow', 'hidden');
                     //rocket.parent().css('overflow', _overflow_state);
                     rocket.css({
                             display: 'block',
