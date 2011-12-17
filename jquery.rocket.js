@@ -16,11 +16,19 @@
                 var rocketMarkup = '<div id="rocket" style="display: none"></div>';
                 $('body').append(rocketMarkup);
                 var rocket = $('#rocket').css({
-                        width: "275px",
-                        height: "375px",
-                        background: "url('" + options.base_url + "img/rocket.png') no-repeat",
+                        width: 275,
+                        height: 375,
+                        background: "url('" + options.base_url + "img/rocket-off.png') no-repeat",
                         margin: "140px 0 50px",
                         position: "absolute"
+                    });
+
+                rocket.append('<div id="rocketFire"></span>');
+                var fire = $('#rocketFire').css({
+                        position: 'absolute',
+                        height: 375,
+                        width: 275,
+                        background: 'url("' + options.base_url + 'img/rocket-fire.png") no-repeat'
                     });
 
                 rocket.append('<span id="rocketSteam"></span>');
@@ -62,6 +70,7 @@
                     var _overflow_state = rocket.parent().css('overflow');
                     var _width = $(window).width();
                     var _height = $(window).height();
+                    fire.css('opacity', 0);
                     rocket.parent().css('overflow', 'hidden');
                     //rocket.parent().css('overflow', _overflow_state);
                     rocket.css({
@@ -75,10 +84,12 @@
                         .animate({left: '+=25'}, 200, function() {
                                 _propulsion = true;
                                 propulsion();
+                                fire.animate({opacity: '+=100'}, 1000);
                                 rocket
                                     .delay(2000)
                                     .animate({'left':'+=' + _width, "top": '-=' + (_height + 375)}, 5000,
                                              function() {
+                                                 _propulsion = false;
                                                  _started = false;
                                              });
                             });

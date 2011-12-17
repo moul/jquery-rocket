@@ -8,5 +8,13 @@
   <body>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script src="jquery.rocket.js"></script>
+    <p><a id="clickme" href="#">click me !</a></p>
+    <p>or: <span>↑ ↑ ↓ ↓ ← → ← → B A</span></p>
+    <script type="text/javascript">
+      $(window).rocket({enterOn: 'now'});
+      //$(window).rocket({enterOn: 'timer', delayTime: 2000});
+      $(window).rocket({enterOn: 'konami-code'});
+      $('#clickme').rocket({enterOn: 'click'});
+    </script>
   </body>
 </html>
