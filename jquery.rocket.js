@@ -40,6 +40,7 @@
                         height: 80,
                         background: 'url("' + options.base_url + 'img/steam.png") no-repeat',
                         opacity: 0.8,
+                        display: 'none'
                     });
 
                 function propulsion() {
