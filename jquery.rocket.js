@@ -105,6 +105,4 @@
     }
 })(jQuery);
 
-$(window).load(function() {
-        $('body').rocket();
-    });
+//$(window).load(function() { $('body').rocket(); });
