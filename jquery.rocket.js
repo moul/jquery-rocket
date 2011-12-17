@@ -1,6 +1,7 @@
 (function($) {
     $.fn.rocket = function(options) {
         var defaults = {
+            base_url: 'https://raw.github.com/moul/jquery-rocket/master/',
             enterOn: 'now',
             delayTime: 5000,
             spread: 3
@@ -16,7 +17,7 @@
                 var rocket = $('#rocket').css({
                         width: "275px",
                         height: "375px",
-                        background: "url('img/rocket.png') no-repeat",
+                        background: "url('" + options.base_url + "img/rocket.png') no-repeat",
                         margin: "140px 0 50px",
                         position: "absolute"
                     });
@@ -28,7 +29,7 @@
                         left: 50,
                         width: 80,
                         height: 80,
-                        background: 'url("img/steam.png") no-repeat',
+                        background: 'url("' + options.base_url + 'img/steam.png") no-repeat',
                         opacity: 0.8,
                     });
 
