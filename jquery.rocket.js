@@ -19,6 +19,7 @@
                 var rocket = $('#rocket').css({
                         width: 275,
                         height: 375,
+                        zIndex: 9999,
                         background: "url('" + options.base_url + "img/rocket-off.png') no-repeat",
                         margin: "140px 0 50px",
                         position: "absolute"
