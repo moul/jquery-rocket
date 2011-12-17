@@ -10,7 +10,8 @@
 
         return this.each(function() {
                 var _this = $(this);
-                var _status = 'stopped';
+                var _started = false;
+                var _propulation = false;
 
                 var rocketMarkup = '<div id="rocket" style="display: none"></div>';
                 $('body').append(rocketMarkup);
@@ -34,7 +35,7 @@
                     });
 
                 function propulsion() {
-                    if (_status != 'started') {
+                    if (!_propulsion) {
                         return ;
                     }
                     var rotate = Math.floor(Math.random() * options.spread) - ((options.spread - 1) / 2);
@@ -54,6 +55,10 @@
                 }
 
                 function init() {
+                    if (_started) {
+                        return ;
+                    }
+                    _started = true;
                     var _overflow_state = rocket.parent().css('overflow');
                     var _width = $(window).width();
                     var _height = $(window).height();
@@ -68,13 +73,13 @@
                         .delay(200)
                         .animate({left:'-=' + (_width - 250)}, 1000)
                         .animate({left: '+=25'}, 200, function() {
-                                _status = 'started';
+                                _propulsion = true;
                                 propulsion();
                                 rocket
                                     .delay(2000)
                                     .animate({'left':'+=' + _width, "top": '-=' + (_height + 375)}, 5000,
                                              function() {
-                                                 _status = 'stopped';
+                                                 _started = false;
                                              });
                             });
                 }
@@ -86,15 +91,13 @@
                 } else if(options.enterOn == 'click') {
                     _this.bind('click', function(e) {
                             e.preventDefault();
-                            if(!locked) {
-                                init();
-                            }
+                            init();
                         });
                 } else if(options.enterOn == 'konami-code'){
                     var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
                     $(window).bind("keydown.rocketz", function(e){
-                            kkeys.push( e.keyCode );
-                            if ( kkeys.toString().indexOf( konami ) >= 0 ) {
+                            kkeys.push(e.keyCode);
+                            if (kkeys.toString().indexOf(konami) >= 0) {
                                 init();
                                 $(window).unbind('keydown.rocketz');
                             }
