@@ -92,6 +92,7 @@
                                                      function() {
                                                          _propulsion = false;
                                                          _started = false;
+                                                         steam.css('display' ,'none');
                                                      });
                                     });
                             });
