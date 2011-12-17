@@ -12,6 +12,7 @@
                 var _this = $(this);
                 var _started = false;
                 var _propulation = false;
+                var _on_the_launchpad = false;
 
                 var rocketMarkup = '<div id="rocket" style="display: none"></div>';
                 $('body').append(rocketMarkup);
@@ -67,35 +68,50 @@
                     if (_started) {
                         return ;
                     }
+                    _on_the_launchpad = false;
                     _started = true;
                     //var _overflow_state = rocket.parent().css('overflow');
-                    var _width = $(window).width();
-                    var _height = $(window).height();
+                    var _width = $('body').width();
+                    //var _height = $(window).height();
+                    var _height = $('body').height();
                     fire.css('opacity', 0);
                     //rocket.parent().css('overflow', 'hidden');
                     //rocket.parent().css('overflow', _overflow_state);
-                    rocket.css({
-                            display: 'block',
-                            left: _width - 275,
-                            top: _height,
-                          })
-                        .animate({top: '-=500'}, 500).animate({top: '+=25'}, 200)
-                        .delay(200)
-                        .animate({left:'-=' + (_width - 250)}, 1000)
-                        .animate({left: '+=25'}, 200, function() {
-                                fire.delay(100).animate({opacity: '+=1'}, 300, function() {
-                                        _propulsion = true;
-                                        propulsion();
-                                        rocket
-                                            .delay(2000)
-                                            .animate({'left':'+=' + _width, "top": '-=' + (_height + 375)}, 5000,
-                                                     function() {
-                                                         _propulsion = false;
-                                                         _started = false;
-                                                         steam.css('display' ,'none');
-                                                     });
+                    //$("html").scrollTop();
+                    //scroll(0, 0);
+                    $("html:not(:animated),body:not(:animated)").animate({scrollTop: _height - $(window).height()}, 500, function() {
+                            if (_on_the_launchpad) {
+                                return ;
+                            }
+                            _on_the_launchpad = true;
+                            rocket.css({
+                                    display: 'block',
+                                        left: _width - 275,
+                                        top: _height,
+                                        })
+                                .animate({top: '-=500'}, 500).animate({top: '+=25'}, 200)
+                                .delay(200)
+                                .animate({left: '-=' + (_width - 250)}, 1000)
+                                .animate({left: '+=25'}, 200, function() {
+                                        fire
+                                            .delay(100)
+                                            .animate({opacity: '+=1'}, 300, function() {
+                                                    _propulsion = true;
+                                                    propulsion();
+                                                    $("html:not(:animated),body:not(:animated)")
+                                                        .delay(2300)
+                                                        .animate({scrollTop: 0}, 3200);
+                                                    rocket
+                                                        .delay(2000)
+                                                        .animate({'left':'+=' + _width, "top": '-=' + (_height + 400)}, 5000,
+                                                                 function() {
+                                                                     _propulsion = false;
+                                                                     _started = false;
+                                                                     steam.css('display' ,'none');
+                                                                 });
+                                                });
                                     });
-                            });
+                        });
                 }
 
                 if (options.enterOn == 'now') {
@@ -110,8 +126,6 @@
                 } else if(options.enterOn == 'konami-code'){
                     var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
                     $(window).bind("keydown.rocketz", function(e){
-                            //$("html").scrollTop();
-                            scroll(0, 0);
                             kkeys.push(e.keyCode);
                             if (kkeys.toString().indexOf(konami) >= 0) {
                                 init();
