@@ -99,7 +99,8 @@
                             kkeys.push(e.keyCode);
                             if (kkeys.toString().indexOf(konami) >= 0) {
                                 init();
-                                $(window).unbind('keydown.rocketz');
+                                kkeys = []
+                                //$(window).unbind('keydown.rocketz');
                             }
                         }, true);
                 }
