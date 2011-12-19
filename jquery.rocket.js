@@ -71,13 +71,12 @@
                     }
                     _on_the_launchpad = false;
                     _started = true;
-                    //var _overflow_state = rocket.parent().css('overflow');
+                    var _overflow_state = rocket.parent().css('overflow');
                     var _width = $('body').width();
                     //var _height = $(window).height();
                     var _height = Math.max($('body').height(), $(window).height());
                     fire.css('opacity', 0);
-                    //rocket.parent().css('overflow', 'hidden');
-                    //rocket.parent().css('overflow', _overflow_state);
+                    rocket.parent().css('overflow', 'hidden');
                     //$("html").scrollTop();
                     //scroll(0, 0);
                     $("html:not(:animated),body:not(:animated)").animate({scrollTop: _height - $(window).height()}, 500, function() {
@@ -106,6 +105,7 @@
                                                         .delay(2000)
                                                         .animate({'left':'+=' + _width, "top": '-=' + (_height + 400)}, 5000,
                                                                  function() {
+                                                                     rocket.parent().css('overflow', _overflow_state);
                                                                      _propulsion = false;
                                                                      _started = false;
                                                                      steam.css('display' ,'none');
