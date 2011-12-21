@@ -20,7 +20,7 @@
                                                                 width: 275,
                                                                 height: 375,
                                                                 zIndex: 9999,
-                                                                background: "url('" + options.base_url + "img/rocket-off.png') no-repeat",
+                                                                background: "url('" + options.base_url + "/img/rocket-off.png') no-repeat",
                                                                 margin: "140px 0 50px",
                                                                 position: "absolute"
                                                             });
@@ -30,7 +30,7 @@
                                                                   position: 'absolute',
                                                                   height: 375,
                                                                   width: 275,
-                                                                  background: 'url("' + options.base_url + 'img/rocket-fire.png") no-repeat'
+                                                                  background: 'url("' + options.base_url + '/img/rocket-fire.png") no-repeat'
                                                               });
 
                               rocket.append('<span id="rocketSteam"></span>');
@@ -40,7 +40,7 @@
                                                                     left: 50,
                                                                     width: 80,
                                                                     height: 80,
-                                                                    background: 'url("' + options.base_url + 'img/steam.png") no-repeat',
+                                                                    background: 'url("' + options.base_url + '/img/steam.png") no-repeat',
                                                                     opacity: 0.8,
                                                                     display: 'none'
                                                                 });
