@@ -1,4 +1,4 @@
-(function($) {
+;(function($) {
      $.fn.rocket = function(options) {
          var defaults = {
              base_url: 'https://raw.github.com/moul/jquery-rocket/master/img/',
