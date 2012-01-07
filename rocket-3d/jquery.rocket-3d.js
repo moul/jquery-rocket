@@ -17,7 +17,6 @@
                                   _started = true;
                                   var _width = $('body').width();
                                   var _height = Math.max($('body').height(), $(window).height());
-                                  fire.css('opacity', 0);
                                   $("html:not(:animated),body:not(:animated)").animate({scrollTop: _height - $(window).height()}, 500, function() {
                                                                                        });
                               }

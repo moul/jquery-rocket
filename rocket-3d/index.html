@@ -7,15 +7,15 @@
   </head>
   <body>
     <script src="Three.js"></script>
-    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script src="jquery.rocket-3d.js"></script>
     <p><a id="clickme" href="#">click me !</a></p>
     <p>or: <span>↑ ↑ ↓ ↓ ← → ← → B A</span></p>
     <script type="text/javascript">
-      //$(window).rocket({enterOn: 'now'});
-      //$(window).rocket({enterOn: 'timer', delayTime: 2000});
-      $(window).rocket({enterOn: 'konami-code'});
-      $('#clickme').rocket({enterOn: 'click'});
+      //$(window).rocket3d({enterOn: 'now'});
+      //$(window).rocket3d({enterOn: 'timer', delayTime: 2000});
+      $(window).rocket3d({enterOn: 'konami-code'});
+      $('#clickme').rocket3d({enterOn: 'click'});
     </script>
   </body>
 </html>
