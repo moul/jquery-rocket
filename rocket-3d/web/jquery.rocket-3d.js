@@ -15,8 +15,8 @@
                                       return ;
                                   }
                                   _started = true;
-                                  var _width = $('body').width();
-                                  var _height = Math.max($('body').height(), $(window).height());
+                                  var WIDTH = $('body').width();
+                                  var HEIGHT = Math.max($('body').height(), $(window).height());
                                   /******/
                                   if (typeof(Detector) == 'undefined' || !Detector.webgl) {
                                       Detector.addGetWebGLMessage();
@@ -25,14 +25,18 @@
 			          var camera, scene, renderer;
 			          var mesh, mesh2, mesh3, light;
 			          var mouseX = 0, mouseY = 0;
-			          var windowHalfX = _width / 2;
-			          var windowHalfY = _height / 2;
-                                  var windowRatio = _width / _height;
+			          var windowHalfX = WIDTH / 2;
+			          var windowHalfY = HEIGHT / 2;
+                                  var windowRatio = WIDTH / HEIGHT;
                                   $('body').append('<div id="rocket3dcontainer"></div>');
                                   container = $('#rocket3dcontainer');
                                   var _overflow_state = container.parent().css('overflow');
-                                  container.css({position: 'absolute', width: _width, height: _height, top: 0, left: 0});
-				  camera = new THREE.PerspectiveCamera(40, _width / _height, 1, 10000);
+                                  container.css({position: 'absolute', width: WIDTH, height: HEIGHT, top: 0, left: 0});
+                                  var VIEW_ANGLE = 40,
+                                  ASPECT = WIDTH / HEIGHT,
+                                  NEAR = 0.1,
+                                  FAR = 10000;
+				  camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 				  camera.position.z = 4000;
 				  scene = new THREE.Scene();
 
@@ -49,8 +53,8 @@
 				  loader.load("obj/rocket3d.js", function (geometry) {
 				                  geometry.materials[0].shading = THREE.FlatShading;
                                                   mesh = new THREE.Object3D();
-                                                  mesh.position.x = _width / 2;
-				                  mesh.position.y = -_height / 2 + 50;
+                                                  mesh.position.x = WIDTH / 2;
+				                  mesh.position.y = -HEIGHT / 2 + 50;
 				                  mesh.position.z = 0;
                                                   mesh.rotation.x = 0;
                                                   mesh.rotation.y = 0;
@@ -64,8 +68,7 @@
                                               });
 
 				  renderer = new THREE.WebGLRenderer({antialias: true});
-                                  //alert(_width + ' / ' + _height);
-				  renderer.setSize(_width, _height);
+				  renderer.setSize(WIDTH, HEIGHT);
                                   container.append(renderer.domElement);
                                   if (typeof(Stats) != 'undefined') {
 				      stats = new Stats();
@@ -83,10 +86,10 @@
                                   //container.parent().css('overflow', 'hidden');
                                   var step = 0;
                                   var sleep_counter = 0;
-                                  $('#aawidth').html(_width);
-                                  $('#aaheight').html(_height);
+                                  $('#aawidth').html(WIDTH);
+                                  $('#aaheight').html(HEIGHT);
 				  $('#aacamera').html(camera.position.z);
-                                  $("html:not(:animated),body:not(:animated)").animate({scrollTop: _height - $(window).height()}, 500, animate);
+                                  $("html:not(:animated),body:not(:animated)").animate({scrollTop: HEIGHT - $(window).height()}, 500, animate);
 			          function animate() {
 				      requestAnimationFrame(animate);
 
@@ -106,7 +109,7 @@
                                       if (step == 0) {
 					  mesh.rotation.y += 0.1;
                                           mesh.position.x -= 14;
-                                          if (mesh.position.x <= -_width / 2 + 200) {
+                                          if (mesh.position.x <= -WIDTH / 2 + 200) {
                                               mesh.rotation.y = Math.round(mesh.rotation.y * 10) / 10;
                                               mesh.position.x = Math.round(mesh.position.x * 10) / 10;
                                               step = 1;
@@ -125,7 +128,7 @@
                                           }
 				      } else if (step == 3) {
                                           mesh.position.x += 2;
-                                          if (mesh.position.x >= -_width / 2 + 300) {
+                                          if (mesh.position.x >= -WIDTH / 2 + 300) {
                                               sleep_counter = 0;
                                               step = 5;
                                           }
@@ -223,7 +226,7 @@
                                           mesh.scale.x -= 0.2;
                                           mesh.scale.y -= 0.2;
                                           mesh.scale.z -= 0.2;
-                                          if (mesh.position.x > _width) {
+                                          if (mesh.position.x > WIDTH) {
                                               step = 100;
                                           }
                                       }
