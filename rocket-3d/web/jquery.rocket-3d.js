@@ -5,10 +5,13 @@
              delayTime: 5000,
              width: $(window).width(),
              height: $(window).height(),
+             vibrate: Math.PI / 10,
              far: 10000,
              near: 0.1,
              angle: 40,
-             show_stats: true,
+             show_stats: false,
+             stars: 800,
+             konami_code: "38,38,40,40,37,39,37,39,66,65",
              show_wireframes: false,
              use_mouse: true,
              camera_z_position: 1500,
@@ -30,6 +33,7 @@
                                   _started = true;
                                   if (typeof(Detector) == 'undefined' || !Detector.webgl) {
                                       Detector.addGetWebGLMessage();
+                                      return ;
                                   }
                                   var camera, scene, container, renderer, mesh, light;
                                   var stats = false,
@@ -67,18 +71,18 @@
                                                                                             transparent: true
                                                                                         });
                                   var particleGeometry = new THREE.Geometry();
-                                  for (var p = 0; p < 800; p++) {
+                                  for (var p = 0; p < options.stars; p++) {
                                       particleGeometry.vertices.push(
                                           new THREE.Vertex(
                                               new THREE.Vector3(
-                                                  Math.random() * options.camera_z_position * 6 - options.camera_z_position * 3,
+                                                  Math.random() * options.camera_z_position * 15 - options.camera_z_position * 3,
                                                   Math.random() * options.camera_z_position * 6 - options.camera_z_position * 3,
                                                   -1000
                                               )
                                           )
                                       );
                                   }
-                                  particleSystem = new THREE.ParticleSystem(particleGeometry, particleMaterial);
+                                  var particleSystem = new THREE.ParticleSystem(particleGeometry, particleMaterial);
                                   scene.add(particleSystem);
 
 				  loader.load(options.rocket_obj, function (geometry) {
@@ -99,8 +103,39 @@
 				                      mesh.add(part2);
                                                   }
                                                   animate();
+				                  loader.load(options.fire_obj, function (geometry) {
+				                                  geometry.materials[0].shading = THREE.FlatShading;
+                                                                  mesh2 = new THREE.Object3D();
+                                                                  //mesh.position.x = WIDTH / 2;
+				                                  //mesh.position.y = -HEIGHT / 2 + 50;
+				                                  mesh2.position.x = -300;
+                                                                  mesh2.rotation.x = Math.PI / 2;
+                                                                  mesh2.rotation.y = Math.PI * 1.1;
+                                                                  mesh2.rotation.z = Math.PI / 2;
+				                                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
+				                                  scene.add(mesh2);
+				                                  //var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
+                                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: true}));
+				                                  mesh2.add(part1);
+                                                                  if (options.show_wireframes) {
+                                                                      var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
+				                                      mesh2.add(part2);
+                                                                  }
+                                                                  pointLight = new THREE.PointLight(options.fire_color);
+                                                                  pointLight.position = mesh2.position;
+                                                                  pointLight.position.x = mesh2.position.x;
+                                                                  scene.add(pointLight);
+                                                                  /*new TWEEN.Tween(camera.position)
+                                                                   .to({
+                                                                   x: camera.position.x + 500,
+                                                                   }, 800)
+                                                                   .easing(TWEEN.Easing.Cubic.EaseIn)
+                                                                   .onComplete(function() { fireNewTween(mesh, light, newSize); })
+                                                                   .start();*/
+                                                                  fireNewTween(mesh2, pointLight, 150);
+                                                                  animate();
+                                                              });
                                               });
-
 
                                   function fireNewTween(mesh, light, oldSize) {
                                       var newSize = Math.random() * 100 + 100;
@@ -120,39 +155,6 @@
                                           .onComplete(function() { fireNewTween(mesh, light, newSize); })
                                           .start();
                                   }
-
-				  loader.load(options.fire_obj, function (geometry) {
-				                  geometry.materials[0].shading = THREE.FlatShading;
-                                                  mesh2 = new THREE.Object3D();
-                                                  //mesh.position.x = WIDTH / 2;
-				                  //mesh.position.y = -HEIGHT / 2 + 50;
-				                  mesh2.position.x = -300;
-                                                  mesh2.rotation.x = Math.PI / 2;
-                                                  mesh2.rotation.y = Math.PI * 1.1;
-                                                  mesh2.rotation.z = Math.PI / 2;
-				                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
-				                  scene.add(mesh2);
-				                  //var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
-                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: options.fire_color, opacity: 0.9, overdraw: true}));
-				                  mesh2.add(part1);
-                                                  if (options.show_wireframes) {
-                                                      var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
-				                      mesh2.add(part2);
-                                                  }
-                                                  pointLight = new THREE.PointLight(options.fire_color);
-                                                  pointLight.position = mesh2.position;
-                                                  pointLight.position.x = mesh2.position.x;
-                                                  scene.add(pointLight);
-                                                  /*new TWEEN.Tween(camera.position)
-                                                      .to({
-                                                              x: camera.position.x + 500,
-                                                          }, 800)
-                                                      .easing(TWEEN.Easing.Cubic.EaseIn)
-                                                      .onComplete(function() { fireNewTween(mesh, light, newSize); })
-                                                      .start();*/
-                                                  fireNewTween(mesh2, pointLight, 150);
-                                                  animate();
-                                              });
 
 				  renderer = new THREE.WebGLRenderer({antialias: true});
 				  renderer.setSize(options.width, options.height);
@@ -186,7 +188,12 @@
 				      //light.position.y += (-mouseY - light.position.y ) * 0.01;
 				      camera.lookAt(scene.position);
 
-                                      var rotate = Math.floor(Math.random() * options.spread) - ((options.spread - 1) / 2);
+                                      particleSystem.position.x -= 0.5;
+
+                                      //if (options.vibrate) {
+                                          //var vibration = Math.floor(Math.random() * options.vibrate) - (options.vibrate / 2);
+                                          //mesh.position.x += vibration;
+                                      //}
 
                                       /*  $('#aastep').html(step);
                                       $('#aasleep_counter').html(sleep_counter);
@@ -219,7 +226,7 @@
                                                  init();
                                              });
                               } else if(options.enterOn == 'konami-code') {
-                                  var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
+                                  var kkeys = [], konami = options.konami_code;
                                   $(window).bind("keydown.rocketz", function(e) {
                                                      kkeys.push(e.keyCode);
                                                      if (kkeys.toString().indexOf(konami) >= 0) {
