@@ -3,6 +3,19 @@
          var defaults = {
              enterOn: 'now',
              delayTime: 5000,
+             width: $(window).width(),
+             height: $(window).height(),
+             far: 10000,
+             near: 0.1,
+             angle: 40,
+             show_stats: true,
+             show_wireframes: false,
+             use_mouse: true,
+             camera_z_position: 1500,
+             light_color: 0xFFFFFF,
+             rocket_obj: 'obj/rocket3d.js',
+             fire_obj: 'obj/rocket3d_flame.js',
+             fire_color: 0xFFBB00
          };
          var options = $.extend(defaults, options);
 
@@ -15,225 +28,182 @@
                                       return ;
                                   }
                                   _started = true;
-                                  var WIDTH = $('body').width();
-                                  var HEIGHT = Math.max($('body').height(), $(window).height());
-                                  /******/
                                   if (typeof(Detector) == 'undefined' || !Detector.webgl) {
                                       Detector.addGetWebGLMessage();
                                   }
-			          var container, stats;
-			          var camera, scene, renderer;
-			          var mesh, mesh2, mesh3, light;
-			          var mouseX = 0, mouseY = 0;
-			          var windowHalfX = WIDTH / 2;
-			          var windowHalfY = HEIGHT / 2;
-                                  var windowRatio = WIDTH / HEIGHT;
+                                  var camera, scene, container, renderer, mesh, light;
+                                  var stats = false,
+                                  mouseX = 0,
+                                  mouseY = 0,
+			          windowHalfX = options.width / 2,
+			          windowHalfY = options.height / 2,
+                                  aspect = options.width / options.height;
+
                                   $('body').append('<div id="rocket3dcontainer"></div>');
                                   container = $('#rocket3dcontainer');
-                                  var _overflow_state = container.parent().css('overflow');
-                                  container.css({position: 'absolute', width: WIDTH, height: HEIGHT, top: 0, left: 0});
-                                  var VIEW_ANGLE = 40,
-                                  ASPECT = WIDTH / HEIGHT,
-                                  NEAR = 0.1,
-                                  FAR = 10000;
-				  camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				  camera.position.z = 4000;
+                                  container.css({position: 'absolute', width: options.width, height: options.height, top: 0, left: 0});
+                                  container.css({background: '#000000'});
+
+				  camera = new THREE.PerspectiveCamera(options.angle, aspect, options.near, options.far);
+				  camera.position.z = options.camera_z_position;
 				  scene = new THREE.Scene();
 
-                                  scene.fog = new THREE.FogExp2( 0xffffff, 0.0003 );
-                                  //scene.fog.color.setHSV( 0.1, 0.5, 1 );
-                                  scene.fog.color.setHSV( 0.1, 0.10, 1 );
+                                  scene.fog = new THREE.FogExp2(0xffff00, 0.0003);
+                                  scene.fog.color.setHSV(0.1, 0.10, 1);
 
-				  light = new THREE.DirectionalLight(0xffffff);
+				  var light = new THREE.DirectionalLight(options.light_color);
 				  light.position.set(0, 0, 1).normalize();
 				  scene.add(light);
+
+                                  //var ambientLight = new THREE.AmbientLight(0x0000FF);
+                                  //scene.add(ambientLight);
+
 				  var loader = new THREE.JSONLoader();
 
+                                  var particleMaterial= new THREE.ParticleBasicMaterial({
+                                                                                            color: 0xFF66FF,
+                                                                                            size: 15,
+                                                                                            blending: THREE.AdditiveBlending,
+                                                                                            transparent: true
+                                                                                        });
+                                  var particleGeometry = new THREE.Geometry();
+                                  for (var p = 0; p < 800; p++) {
+                                      particleGeometry.vertices.push(
+                                          new THREE.Vertex(
+                                              new THREE.Vector3(
+                                                  Math.random() * options.camera_z_position * 6 - options.camera_z_position * 3,
+                                                  Math.random() * options.camera_z_position * 6 - options.camera_z_position * 3,
+                                                  -1000
+                                              )
+                                          )
+                                      );
+                                  }
+                                  particleSystem = new THREE.ParticleSystem(particleGeometry, particleMaterial);
+                                  scene.add(particleSystem);
 
-				  loader.load("obj/rocket3d.js", function (geometry) {
+				  loader.load(options.rocket_obj, function (geometry) {
 				                  geometry.materials[0].shading = THREE.FlatShading;
                                                   mesh = new THREE.Object3D();
-                                                  mesh.position.x = WIDTH / 2;
-				                  mesh.position.y = -HEIGHT / 2 + 50;
-				                  mesh.position.z = 0;
-                                                  mesh.rotation.x = 0;
-                                                  mesh.rotation.y = 0;
-                                                  mesh.rotation.z = 0;
-				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
-				                  scene.add( mesh );
+                                                  //mesh.position.x = WIDTH / 2;
+				                  //mesh.position.y = -HEIGHT / 2 + 50;
+				                  mesh.position.x = -300;
+                                                  mesh.rotation.x = Math.PI / 2;
+                                                  mesh.rotation.y = Math.PI * 1.1;
+                                                  mesh.rotation.z = Math.PI / 2;
+				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 150;
+				                  scene.add(mesh);
 				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
 				                  mesh.add(part1);
-                                                  //var part2 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
-				                  //mesh.add(part2);
+                                                  if (options.show_wireframes) {
+                                                      var part2 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
+				                      mesh.add(part2);
+                                                  }
+                                                  animate();
+                                              });
+
+
+                                  function fireNewTween(mesh, light, oldSize) {
+                                      var newSize = Math.random() * 100 + 100;
+                                      light.intensity += 1;
+                                      new TWEEN.Tween(light)
+                                          .to({intensity: newSize / 1.5}, 150)
+                                          .easing(TWEEN.Easing.Cubic.EaseIn)
+                                          .start();
+                                      //console.dir(light);exit;
+                                      new TWEEN.Tween(mesh.scale)
+                                          .to({
+                                                  x: newSize,
+                                                  y: newSize,
+                                                  z: newSize
+                                              }, 150)
+                                          .easing(TWEEN.Easing.Cubic.EaseIn)
+                                          .onComplete(function() { fireNewTween(mesh, light, newSize); })
+                                          .start();
+                                  }
+
+				  loader.load(options.fire_obj, function (geometry) {
+				                  geometry.materials[0].shading = THREE.FlatShading;
+                                                  mesh2 = new THREE.Object3D();
+                                                  //mesh.position.x = WIDTH / 2;
+				                  //mesh.position.y = -HEIGHT / 2 + 50;
+				                  mesh2.position.x = -300;
+                                                  mesh2.rotation.x = Math.PI / 2;
+                                                  mesh2.rotation.y = Math.PI * 1.1;
+                                                  mesh2.rotation.z = Math.PI / 2;
+				                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
+				                  scene.add(mesh2);
+				                  //var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
+                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: options.fire_color, opacity: 0.9, overdraw: true}));
+				                  mesh2.add(part1);
+                                                  if (options.show_wireframes) {
+                                                      var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
+				                      mesh2.add(part2);
+                                                  }
+                                                  pointLight = new THREE.PointLight(options.fire_color);
+                                                  pointLight.position = mesh2.position;
+                                                  pointLight.position.x = mesh2.position.x;
+                                                  scene.add(pointLight);
+                                                  /*new TWEEN.Tween(camera.position)
+                                                      .to({
+                                                              x: camera.position.x + 500,
+                                                          }, 800)
+                                                      .easing(TWEEN.Easing.Cubic.EaseIn)
+                                                      .onComplete(function() { fireNewTween(mesh, light, newSize); })
+                                                      .start();*/
+                                                  fireNewTween(mesh2, pointLight, 150);
+                                                  animate();
                                               });
 
 				  renderer = new THREE.WebGLRenderer({antialias: true});
-				  renderer.setSize(WIDTH, HEIGHT);
+				  renderer.setSize(options.width, options.height);
                                   container.append(renderer.domElement);
-                                  if (typeof(Stats) != 'undefined') {
+
+                                  if (options.show_stats && typeof(Stats) != 'undefined') {
 				      stats = new Stats();
 				      stats.domElement.style.position = 'absolute';
 				      stats.domElement.style.top = '0px';
 				      stats.domElement.style.right = '0px';
 				      container.append(stats.domElement);
-                                  } else {
-                                      stats = false;
                                   }
-				  /*document.addEventListener('mousemove', function(event) {
-				                                mouseX = (event.clientX - windowHalfX);
-				                                mouseY = (event.clientY - windowHalfY);
-                                                            }, false);*/
-                                  //container.parent().css('overflow', 'hidden');
-                                  var step = 0;
-                                  var sleep_counter = 0;
-                                  $('#aawidth').html(WIDTH);
-                                  $('#aaheight').html(HEIGHT);
-				  $('#aacamera').html(camera.position.z);
-                                  $("html:not(:animated),body:not(:animated)").animate({scrollTop: HEIGHT - $(window).height()}, 500, animate);
+
+                                  if (options.use_mouse) {
+				      document.addEventListener('mousemove', function(event) {
+				                                    mouseX = (event.clientX - windowHalfX) * 2;
+				                                    mouseY = (event.clientY - windowHalfY) * 2;
+                                                                }, false);
+                                  }
+
+
 			          function animate() {
 				      requestAnimationFrame(animate);
 
 				      camera.position.x += (mouseX - camera.position.x ) * 1;
 				      camera.position.y += (-mouseY - camera.position.y ) * 1;
+				      //mesh.position.x += (mouseX - mesh.position.x ) * 1;
+				      //mesh.position.y += (-mouseY - mesh.position.y ) * 1;
+				      //mesh.rotation.x += (mouseX - mesh.rotation.x ) * 0.001;
+				      //light.position.x += (mouseX - light.position.x ) * 0.01;
+				      //light.position.y += (-mouseY - light.position.y ) * 0.01;
 				      camera.lookAt(scene.position);
 
-                                      $('#aastep').html(step);
+                                      var rotate = Math.floor(Math.random() * options.spread) - ((options.spread - 1) / 2);
+
+                                      /*  $('#aastep').html(step);
                                       $('#aasleep_counter').html(sleep_counter);
                                       $('#rotationx').html(mesh.rotation.x);
                                       $('#rotationy').html(mesh.rotation.y);
                                       $('#rotationz').html(mesh.rotation.z);
                                       $('#positionx').html(mesh.position.x);
                                       $('#positiony').html(mesh.position.y);
-                                      $('#positionz').html(mesh.position.z);
+                                      $('#positionz').html(mesh.position.z);*/
 
-                                      if (step == 0) {
-					  mesh.rotation.y += 0.1;
-                                          mesh.position.x -= 14;
-                                          if (mesh.position.x <= -WIDTH / 2 + 200) {
-                                              mesh.rotation.y = Math.round(mesh.rotation.y * 10) / 10;
-                                              mesh.position.x = Math.round(mesh.position.x * 10) / 10;
-                                              step = 1;
-                                              sleep_counter = 0;
-                                          }
-				      } else if (step == 1) {
-					  mesh.rotation.y += 0.1;
-                                          if (mesh.rotation.y % 6 < 0.2) {
-                                              mesh.rotation.y = Math.round(mesh.rotation.y * 10) / 10;
-                                              step = 2;
-                                          }
-				      } else if (step == 2) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 40) {
-                                              step = 3;
-                                          }
-				      } else if (step == 3) {
-                                          mesh.position.x += 2;
-                                          if (mesh.position.x >= -WIDTH / 2 + 300) {
-                                              sleep_counter = 0;
-                                              step = 5;
-                                          }
-				      } else if (step == 5) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 20) {
-                                              step = 10;
-                                          }
-				      } else if (step == 10) {
-                                          mesh.rotation.y += 0.01;
-                                          if (mesh.rotation.y >= 4.5) {
-                                              sleep_counter = 0;
-                                              step = 15;
-                                          }
-				      } else if (step == 15) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 20) {
-                                              step = 20;
-                                          }
-				      } else if (step == 20) {
-                                          mesh.rotation.y += 0.01;
-                                          mesh.rotation.x -= 0.02;
-                                          if (mesh.rotation.x <= -0.3) {
-                                              sleep_counter = 0;
-                                              step = 30;
-                                          }
-				      } else if (step == 25) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 10) {
-                                              step = 30;
-                                          }
-                                      } else if (step == 30) {
-                                          mesh.rotation.y += 0.01;
-                                          mesh.rotation.z -= 0.01;
-                                          if (mesh.rotation.z <= -0.4) {
-                                              sleep_counter = 0;
-                                              step = 35;
-                                          }
-				      } else if (step == 35) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 10) {
-                                              step = 40;
-                                          }
-                                      } else if (step == 40) {
-                                          mesh.rotation.y += 0.01;
-                                          //mesh.position.x += 0.01;
-                                          //alert(mesh.rotation.y);
-                                          //mesh.p
-                                          if (mesh.rotation.y > 5.5) {
-                                              sleep_counter = 0;
-                                              step = 45;
-                                          }
-				      } else if (step == 45) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 10) {
-                                              step = 50;
-                                          }
-                                      } else if (step == 50) {
-                                          mesh.rotation.y -= 0.03;
-                                          //console.log(mesh.rotation.y % 6);
-                                          if (mesh.rotation.y % 6 > 4.6 && mesh.rotation.y % 6 < 4.8) {
-                                              step = 55;
-                                              sleep_counter = 0;
-                                          }
-				      } else if (step == 55) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 10) {
-                                              step = 60;
-                                          }
-                                      } else if (step == 60) {
-                                          mesh.rotation.y += 0.01;
-                                          if (mesh.rotation.y % 6 > 5.3 && mesh.rotation.y % 6 < 5.5) {
-                                              step = 65;
-                                              sleep_counter = 0;
-                                          }
-				      } else if (step == 65) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 10) {
-                                              step = 70;
-                                          }
-                                      } else if (step == 70) {
-                                          mesh.rotation.x -= 0.01;
-                                          if (mesh.rotation.x % 6 + 6 > 5 && mesh.rotation.x % 6 + 6 < 5.2) {
-                                              step = 75;
-                                              sleep_counter = 0;
-                                          }
-				      } else if (step == 75) {
-                                          sleep_counter += 1;
-                                          if (sleep_counter > 50) {
-                                              step = 80;
-                                          }
-                                      } else if (step == 80) {
-                                          mesh.position.y += 5;
-                                          mesh.position.x += 5 * windowRatio;
-                                          mesh.scale.x -= 0.2;
-                                          mesh.scale.y -= 0.2;
-                                          mesh.scale.z -= 0.2;
-                                          if (mesh.position.x > WIDTH) {
-                                              step = 100;
-                                          }
-                                      }
+				      //mesh.rotation.y += 0.05;
+
+                                      TWEEN.update();
 
 				      renderer.render(scene, camera);
 
-                                      if (stats && false) {
+                                      if (options.show_stats && stats) {
 				          stats.update();
                                       }
 			          }
