@@ -104,7 +104,7 @@
                                                       z: options.rocket_rotation.z
                                                       };
 				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 150;
-				                  scene.add(mesh);
+				                  //scene.add(mesh);
 				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture(options.rocket_tex)}));
 				                  mesh.add(part1);
                                                   if (options.show_wireframes) {
@@ -127,12 +127,8 @@
                                                                   mesh2 = new THREE.Object3D();
                                                                   mesh2.position = mesh.position;
                                                                   mesh2.rotation = mesh.rotation;
-				                                  /*mesh2.position.x = -300;
-                                                                  mesh2.rotation.x = Math.PI / 2;
-                                                                  mesh2.rotation.y = Math.PI * 1.1;
-                                                                  mesh2.rotation.z = Math.PI / 2;*/
 				                                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
-				                                  scene.add(mesh2);
+				                                  //scene.add(mesh2);
 
                                                                   var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: false}));
 				                                  mesh2.add(part1);
@@ -141,22 +137,29 @@
 				                                      mesh2.add(part2);
                                                                   }
                                                                   pointLight = new THREE.PointLight(options.fire_color);
-                                                                  pointLight.position = mesh2.position;
-                                                                  pointLight.position.x = mesh2.position.x;
-                                                                  scene.add(pointLight);
+                                                                  pointLight.position = mesh.position;
+                                                                  pointLight.rotation = mesh.rotation;
+
+                                                                  var dummy = new THREE.Object3D();
+                                                                  dummy.add(mesh);
+                                                                  dummy.add(mesh2);
+                                                                  dummy.add(pointLight);
+                                                                  scene.add(dummy);
 
                                                                   fireNewTween(mesh2, pointLight, 150);
-                                                                  oscilNewTween(mesh2);
+                                                                  oscilNewTween(dummy);
+
+
 
                                                                   animate();
                                                               });
                                               });
 
-                                  function fireNewTween(mesh, light, oldSize) {
+                                  function fireNewTween(mesh, pointLight, oldSize) {
                                       var newSize = Math.random() * 100 + 100;
-
-                                      new TWEEN.Tween(light)
-                                          .to({intensity: newSize / 1.5}, 150)
+console.dir(pointLight.position);
+                                      new TWEEN.Tween(pointLight)
+                                          .to({intensity: newSize / 2}, 150)
                                           .easing(TWEEN.Easing.Cubic.EaseIn)
                                           .start();
 
@@ -167,19 +170,19 @@
                                                   z: newSize
                                               }, 150)
                                           .easing(TWEEN.Easing.Cubic.EaseIn)
-                                          .onComplete(function() { fireNewTween(mesh, light, newSize); })
+                                          .onComplete(function() { fireNewTween(mesh, pointLight, newSize); })
                                           .start();
                                   }
 
                                   function oscilNewTween(mesh) {
-                                      console.dir(mesh.rotation);
                                       new TWEEN.Tween(mesh.rotation)
                                           .to({
-                                                  x: options.rocket_rotation.x + Math.random() * Math.PI / 10,
-                                                  y: options.rocket_rotation.y + Math.random() * Math.PI / 20,
-                                                  z: options.rocket_rotation.z + Math.random() * Math.PI / 10
+                                                  x: Math.random() * Math.PI / 15,
+                                                  y: Math.random() * Math.PI / 20,
+                                                  z: Math.random() * Math.PI / 15
                                               }, 930)
                                           .easing(TWEEN.Easing.Linear.EaseNone)
+                                          //.easing(TWEEN.Easing.Circular.EaseInOut)
                                           .onComplete(function() { oscilNewTween(mesh); })
                                           .start();
                                   }
