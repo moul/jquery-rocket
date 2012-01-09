@@ -19,7 +19,8 @@
              rocket_tex: 'tex/rocket3d_uvmap.png',
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00,
-             onInitCallback: false
+             onInitCallback: false,
+             playSong: 'http://files.42k.fr/files/hehengT016-space.mp3'
          };
          var options = $.extend(defaults, options);
 
@@ -109,6 +110,10 @@
                                                   if (options.onInitCallback) {
                                                       options.onInitCallback();
                                                   }
+                                                  if (options.playSong) {
+                                                      $('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
+                                                  }
+
                                                   animate();
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
