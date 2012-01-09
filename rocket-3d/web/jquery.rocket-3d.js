@@ -17,6 +17,11 @@
              light_color: 0xFFFFFF,
              rocket_obj: 'obj/rocket3d.js',
              rocket_tex: 'tex/rocket3d_uvmap.png',
+             rocket_rotation: {
+                 x: Math.PI / 2,
+                 y: Math.PI * 1.1,
+                 z: Math.PI / 2
+             },
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00,
              onInitCallback: false,
@@ -93,9 +98,11 @@
                                                   //mesh.position.x = WIDTH / 2;
 				                  //mesh.position.y = -HEIGHT / 2 + 50;
 				                  mesh.position.x = -300;
-                                                  mesh.rotation.x = Math.PI / 2;
-                                                  mesh.rotation.y = Math.PI * 1.1;
-                                                  mesh.rotation.z = Math.PI / 2;
+                                                  mesh.rotation = {
+                                                      x: options.rocket_rotation.x,
+                                                      y: options.rocket_rotation.y,
+                                                      z: options.rocket_rotation.z
+                                                      };
 				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 150;
 				                  scene.add(mesh);
 				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture(options.rocket_tex)}));
@@ -118,10 +125,12 @@
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
                                                                   mesh2 = new THREE.Object3D();
-				                                  mesh2.position.x = -300;
+                                                                  mesh2.position = mesh.position;
+                                                                  mesh2.rotation = mesh.rotation;
+				                                  /*mesh2.position.x = -300;
                                                                   mesh2.rotation.x = Math.PI / 2;
                                                                   mesh2.rotation.y = Math.PI * 1.1;
-                                                                  mesh2.rotation.z = Math.PI / 2;
+                                                                  mesh2.rotation.z = Math.PI / 2;*/
 				                                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
 				                                  scene.add(mesh2);
 
@@ -137,6 +146,7 @@
                                                                   scene.add(pointLight);
 
                                                                   fireNewTween(mesh2, pointLight, 150);
+                                                                  oscilNewTween(mesh2);
 
                                                                   animate();
                                                               });
@@ -158,6 +168,19 @@
                                               }, 150)
                                           .easing(TWEEN.Easing.Cubic.EaseIn)
                                           .onComplete(function() { fireNewTween(mesh, light, newSize); })
+                                          .start();
+                                  }
+
+                                  function oscilNewTween(mesh) {
+                                      console.dir(mesh.rotation);
+                                      new TWEEN.Tween(mesh.rotation)
+                                          .to({
+                                                  x: options.rocket_rotation.x + Math.random() * Math.PI / 10,
+                                                  y: options.rocket_rotation.y + Math.random() * Math.PI / 20,
+                                                  z: options.rocket_rotation.z + Math.random() * Math.PI / 10
+                                              }, 930)
+                                          .easing(TWEEN.Easing.Linear.EaseNone)
+                                          .onComplete(function() { oscilNewTween(mesh); })
                                           .start();
                                   }
 
