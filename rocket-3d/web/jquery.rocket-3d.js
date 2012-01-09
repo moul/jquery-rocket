@@ -5,7 +5,6 @@
              delayTime: 5000,
              width: $(window).width(),
              height: $(window).height(),
-             vibrate: Math.PI / 10,
              far: 10000,
              near: 0.1,
              angle: 40,
@@ -53,7 +52,7 @@
 				  camera.position.z = options.camera_z_position;
 				  scene = new THREE.Scene();
 
-                                  scene.fog = new THREE.FogExp2(0xffff00, 0.0003);
+                                  scene.fog = new THREE.FogExp2(0x888888, 0.0003);
                                   scene.fog.color.setHSV(0.1, 0.10, 1);
 
 				  var light = new THREE.DirectionalLight(options.light_color);
@@ -110,16 +109,14 @@
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
                                                                   mesh2 = new THREE.Object3D();
-                                                                  //mesh.position.x = WIDTH / 2;
-				                                  //mesh.position.y = -HEIGHT / 2 + 50;
 				                                  mesh2.position.x = -300;
                                                                   mesh2.rotation.x = Math.PI / 2;
                                                                   mesh2.rotation.y = Math.PI * 1.1;
                                                                   mesh2.rotation.z = Math.PI / 2;
 				                                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
 				                                  scene.add(mesh2);
-				                                  //var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
-                                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: true}));
+
+                                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: false}));
 				                                  mesh2.add(part1);
                                                                   if (options.show_wireframes) {
                                                                       var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
@@ -129,26 +126,21 @@
                                                                   pointLight.position = mesh2.position;
                                                                   pointLight.position.x = mesh2.position.x;
                                                                   scene.add(pointLight);
-                                                                  /*new TWEEN.Tween(camera.position)
-                                                                   .to({
-                                                                   x: camera.position.x + 500,
-                                                                   }, 800)
-                                                                   .easing(TWEEN.Easing.Cubic.EaseIn)
-                                                                   .onComplete(function() { fireNewTween(mesh, light, newSize); })
-                                                                   .start();*/
+
                                                                   fireNewTween(mesh2, pointLight, 150);
+
                                                                   animate();
                                                               });
                                               });
 
                                   function fireNewTween(mesh, light, oldSize) {
                                       var newSize = Math.random() * 100 + 100;
-                                      light.intensity += 1;
+
                                       new TWEEN.Tween(light)
                                           .to({intensity: newSize / 1.5}, 150)
                                           .easing(TWEEN.Easing.Cubic.EaseIn)
                                           .start();
-                                      //console.dir(light);exit;
+
                                       new TWEEN.Tween(mesh.scale)
                                           .to({
                                                   x: newSize,
@@ -185,30 +177,9 @@
 
 				      camera.position.x += (mouseX - camera.position.x ) * 1;
 				      camera.position.y += (-mouseY - camera.position.y ) * 1;
-				      //mesh.position.x += (mouseX - mesh.position.x ) * 1;
-				      //mesh.position.y += (-mouseY - mesh.position.y ) * 1;
-				      //mesh.rotation.x += (mouseX - mesh.rotation.x ) * 0.001;
-				      //light.position.x += (mouseX - light.position.x ) * 0.01;
-				      //light.position.y += (-mouseY - light.position.y ) * 0.01;
 				      camera.lookAt(scene.position);
 
                                       particleSystem.position.x -= 0.5;
-
-                                      //if (options.vibrate) {
-                                          //var vibration = Math.floor(Math.random() * options.vibrate) - (options.vibrate / 2);
-                                          //mesh.position.x += vibration;
-                                      //}
-
-                                      /*  $('#aastep').html(step);
-                                      $('#aasleep_counter').html(sleep_counter);
-                                      $('#rotationx').html(mesh.rotation.x);
-                                      $('#rotationy').html(mesh.rotation.y);
-                                      $('#rotationz').html(mesh.rotation.z);
-                                      $('#positionx').html(mesh.position.x);
-                                      $('#positiony').html(mesh.position.y);
-                                      $('#positionz').html(mesh.position.z);*/
-
-				      //mesh.rotation.y += 0.05;
 
                                       TWEEN.update();
 
