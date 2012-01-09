@@ -1,2 +1,3 @@
-- Not from me
-- require: jquery, swfobject
+- authors: free website team (not me)
+- requires: jquery, swfobject
+- inspired by: nyan cat
