@@ -15,7 +15,9 @@ $(document)
                     allowScriptAccess: "always",
                     'wmode':'transparent'
                 };
-                swfobject.embedSWF("http://www.youtube.com/apiplayer?video_id=icAwcByaNtY&version=3&autoplay=1&enablejsapi=1&playerapiid=ytplayer","loveboat", "1", "1", "8", null, null, params, atts);
+                if (typeof(swfobject) != 'undefined') {
+                    swfobject.embedSWF("http://www.youtube.com/apiplayer?video_id=icAwcByaNtY&version=3&autoplay=1&enablejsapi=1&playerapiid=ytplayer","loveboat", "1", "1", "8", null, null, params, atts);
+                }
                 $('#KCode').fadeIn(2000);
                 keys = [];
             }

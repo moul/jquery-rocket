@@ -166,17 +166,30 @@
                                                                   oscilNewTween(dummy);
 
                                                                   if (options.playSong) {
-                                                                      var frameBufferSize = 4096;
-                                                                      var bufferSize = frameBufferSize / 4;
-                                                                      var peak = new Float32Array(bufferSize);
-                                                                      var fft = new FFT(bufferSize, 44100);
                                                                       var audio = document.createElement('audio');
                                                                       for (var i = 0; i < options.playSong.length; i++) {
                                                                           var source = document.createElement('source');
                                                                           source.src = options.playSong[i];
                                                                           audio.appendChild(source);
                                                                       }
+                                                                      /*
+                                                                      var frameBufferSize = 4096;
+                                                                      var bufferSize = frameBufferSize / 4;
+                                                                      var peak = new Float32Array(bufferSize);
+                                                                      var fft = new FFT(bufferSize, 44100);
+
+                                                                      audio.addEventListener('loadedmetadata',
+                                                                                             function(event) {
+                                                                                                 audio.mozFrameBufferLength = frameBufferSize;
+                                                                                                 audio.addEventListener('MozAudioAvailable', function(event) {
+                                                                                                                          signal = DSP.getChannel(DSP.MIX, event.frameBuffer);
+                                                                                                                          fft.forward(signal);
+                                                                                                                          //console.dir(fft.spectrum);
+});
+                                                                                             }, false);
+                                                                       //*/
                                                                       audio.volume = options.playSong_volume;
+                                                                      audio.loop = 'loop';
                                                                       audio.play();
                                                                       //$('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
                                                                   }
