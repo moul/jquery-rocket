@@ -15,6 +15,7 @@
              use_mouse: true,
              camera_z_position: 1500,
              light_color: 0xFFFFFF,
+             orbit_light_color: 0xff8800,
              rocket_obj: 'obj/rocket3d.js',
              rocket_tex: 'tex/rocket3d_uvmap.png',
              rocket_rotation: {
@@ -42,7 +43,7 @@
                                       Detector.addGetWebGLMessage();
                                       return ;
                                   }
-                                  var camera, scene, container, renderer, mesh, light;
+                                  var camera, scene, container, renderer, mesh, light, light1, l1;
                                   var stats = false,
                                   mouseX = 0,
                                   mouseY = 0,
@@ -95,8 +96,6 @@
 				  loader.load(options.rocket_obj, function (geometry) {
 				                  geometry.materials[0].shading = THREE.FlatShading;
                                                   mesh = new THREE.Object3D();
-                                                  //mesh.position.x = WIDTH / 2;
-				                  //mesh.position.y = -HEIGHT / 2 + 50;
 				                  mesh.position.x = -300;
                                                   mesh.rotation = {
                                                       x: options.rocket_rotation.x,
@@ -136,20 +135,34 @@
                                                                       var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
 				                                      mesh2.add(part2);
                                                                   }
-                                                                  pointLight = new THREE.PointLight(options.fire_color);
+
+                                                                  pointLight = false;
+                                                                  /*pointLight = new THREE.PointLight(options.fire_color);
                                                                   pointLight.position = mesh.position;
-                                                                  pointLight.rotation = mesh.rotation;
+                                                                  pointLight.rotation = mesh.rotation;*/
+
 
                                                                   var dummy = new THREE.Object3D();
+
+
+                                                                  light1 = new THREE.PointLight(options.orbit_light_color, 5, 300);
+                                                                  scene.add(light1);
+                                                                  light1.intensity = 5;
+                                                                  var sphere = new THREE.SphereGeometry(5, 16, 8);
+                                                                  l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: options.orbit_light_color }));
+                                                                  l1.position = light1.position;
+                                                                  scene.add(l1);
+
+
+
+
                                                                   dummy.add(mesh);
                                                                   dummy.add(mesh2);
-                                                                  dummy.add(pointLight);
+                                                                  //dummy.add(pointLight);
                                                                   scene.add(dummy);
 
                                                                   fireNewTween(mesh2, pointLight, 150);
                                                                   oscilNewTween(dummy);
-
-
 
                                                                   animate();
                                                               });
@@ -157,11 +170,14 @@
 
                                   function fireNewTween(mesh, pointLight, oldSize) {
                                       var newSize = Math.random() * 100 + 100;
-console.dir(pointLight.position);
-                                      new TWEEN.Tween(pointLight)
-                                          .to({intensity: newSize / 2}, 150)
-                                          .easing(TWEEN.Easing.Cubic.EaseIn)
-                                          .start();
+                                      //console.dir(pointLight.position);
+
+                                      if (pointLight) {
+                                          new TWEEN.Tween(pointLight)
+                                              .to({intensity: newSize / 5}, 150)
+                                              .easing(TWEEN.Easing.Cubic.EaseIn)
+                                              .start();
+                                      }
 
                                       new TWEEN.Tween(mesh.scale)
                                           .to({
@@ -209,6 +225,13 @@ console.dir(pointLight.position);
 
 			          function animate() {
 				      requestAnimationFrame(animate);
+
+                                      if (l1) {
+                                          var time = Date.now() * 0.0005;
+                                          l1.position.x = Math.sin(time * 1) * 500;
+                                          l1.position.y = Math.cos(time * 1) * 300;
+                                          l1.position.z = Math.cos(time * 1) * 200;
+                                      }
 
 				      camera.position.x += (mouseX - camera.position.x ) * 1;
 				      camera.position.y += (-mouseY - camera.position.y ) * 1;
