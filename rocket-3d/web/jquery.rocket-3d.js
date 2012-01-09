@@ -166,6 +166,10 @@
                                                                   oscilNewTween(dummy);
 
                                                                   if (options.playSong) {
+                                                                      var frameBufferSize = 4096;
+                                                                      var bufferSize = frameBufferSize / 4;
+                                                                      var peak = new Float32Array(bufferSize);
+                                                                      var fft = new FFT(bufferSize, 44100);
                                                                       var audio = document.createElement('audio');
                                                                       for (var i = 0; i < options.playSong.length; i++) {
                                                                           var source = document.createElement('source');
