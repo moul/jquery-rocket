@@ -18,7 +18,8 @@
              rocket_obj: 'obj/rocket3d.js',
              rocket_tex: 'tex/rocket3d_uvmap.png',
              fire_obj: 'obj/rocket3d_flame.js',
-             fire_color: 0xFFBB00
+             fire_color: 0xFFBB00,
+             onInitCallback: false
          };
          var options = $.extend(defaults, options);
 
@@ -105,6 +106,9 @@
                                                   container.parent().css('overflow', 'hidden');
                                                   $('html,body').css('overflow', 'hidden');
                                                   $("html:not(:animated),body:not(:animated)").animate({scrollTop: 0}, 500);
+                                                  if (options.onInitCallback) {
+                                                      options.onInitCallback();
+                                                  }
                                                   animate();
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
