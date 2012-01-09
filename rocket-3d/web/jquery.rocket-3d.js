@@ -27,7 +27,8 @@
              fire_color: 0xFFBB00,
              onInitCallback: false,
              //playSong: 'http://files.42k.fr/files/hehengT016-space.mp3'
-             playSong: 'mus/space-loop-2.ogg'
+             playSong: ['mus/space-loop-2.ogg', 'mus/space-loop-2.mp3', 'mus/space-loop-2.mp4'],
+             playSong_volume: 0.7
          };
          var options = $.extend(defaults, options);
 
@@ -165,7 +166,15 @@
                                                                   oscilNewTween(dummy);
 
                                                                   if (options.playSong) {
-                                                                      $('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
+                                                                      var audio = document.createElement('audio');
+                                                                      for (var i = 0; i < options.playSong.length; i++) {
+                                                                          var source = document.createElement('source');
+                                                                          source.src = options.playSong[i];
+                                                                          audio.appendChild(source);
+                                                                      }
+                                                                      audio.volume = options.playSong_volume;
+                                                                      audio.play();
+                                                                      //$('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
                                                                   }
                                                                   animate();
                                                               });
