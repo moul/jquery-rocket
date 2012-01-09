@@ -102,6 +102,8 @@
                                                       var part2 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
 				                      mesh.add(part2);
                                                   }
+                                                  container.parent().css('overflow', 'hidden');
+                                                  $("html:not(:animated),body:not(:animated)").animate({scrollTop: 0}, 500);
                                                   animate();
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
