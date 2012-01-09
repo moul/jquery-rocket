@@ -54,7 +54,7 @@
 				  scene = new THREE.Scene();
 
                                   scene.fog = new THREE.FogExp2(0x888888, 0.0003);
-                                  scene.fog.color.setHSV(0.1, 0.10, 1);
+                                  scene.fog.color.setRGB(0.5, 0.5, 0.5);
 
 				  var light = new THREE.DirectionalLight(options.light_color);
 				  light.position.set(0, 0, 1).normalize();
