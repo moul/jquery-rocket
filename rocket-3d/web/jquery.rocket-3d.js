@@ -26,7 +26,8 @@
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00,
              onInitCallback: false,
-             playSong: 'http://files.42k.fr/files/hehengT016-space.mp3'
+             //playSong: 'http://files.42k.fr/files/hehengT016-space.mp3'
+             playSong: 'mus/space-loop-2.ogg'
          };
          var options = $.extend(defaults, options);
 
@@ -55,6 +56,8 @@
                                   container = $('#rocket3dcontainer');
                                   container.css({position: 'absolute', width: options.width, height: options.height, top: 0, left: 0});
                                   container.css({background: '#000000'});
+                                  container.hide();
+                                  container.fadeIn(3000);
 
 				  camera = new THREE.PerspectiveCamera(options.angle, aspect, options.near, options.far);
 				  camera.position.z = options.camera_z_position;
@@ -116,11 +119,8 @@
                                                   if (options.onInitCallback) {
                                                       options.onInitCallback();
                                                   }
-                                                  if (options.playSong) {
-                                                      $('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
-                                                  }
 
-                                                  animate();
+                                                  //animate();
 				                  loader.load(options.fire_obj, function (geometry) {
 				                                  geometry.materials[0].shading = THREE.FlatShading;
                                                                   mesh2 = new THREE.Object3D();
@@ -164,6 +164,9 @@
                                                                   fireNewTween(mesh2, pointLight, 150);
                                                                   oscilNewTween(dummy);
 
+                                                                  if (options.playSong) {
+                                                                      $('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
+                                                                  }
                                                                   animate();
                                                               });
                                               });
