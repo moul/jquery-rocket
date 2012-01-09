@@ -1,13 +1,20 @@
-Author :
-- Manfred Touron <m@42.am>
+Author
+======
 
-Demo :
-- http://moul.github.com/jquery.rocket.html
+* [moul](https://github.com/moul)
 
-Inspired by :
-- http://www.zurb.com/playground/jquery-raptorize
-- http://tutorialzine.com/2010/08/animated-404-not-found-page-css-jquery/
+Demo
+====
 
-Requires :
-- jQuery
+* [http://moul.github.com/jquery.rocket.html](http://moul.github.com/jquery.rocket.html)
 
+Inspired by
+===========
+
+* [Raptorize](http://www.zurb.com/playground/jquery-raptorize)
+* [Animated 404 not found page](http://tutorialzine.com/2010/08/animated-404-not-found-page-css-jquery/)
+
+Requires
+========
+
+* [jQuery](http://jquery.com)
