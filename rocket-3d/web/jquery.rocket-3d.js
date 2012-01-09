@@ -17,6 +17,7 @@
              camera_z_position: 1500,
              light_color: 0xFFFFFF,
              rocket_obj: 'obj/rocket3d.js',
+             rocket_tex: 'tex/rocket3d_uvmap.png',
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00
          };
@@ -96,13 +97,14 @@
                                                   mesh.rotation.z = Math.PI / 2;
 				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 150;
 				                  scene.add(mesh);
-				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture('tex/rocket3d_uvmap.png')}));
+				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture(options.rocket_tex)}));
 				                  mesh.add(part1);
                                                   if (options.show_wireframes) {
                                                       var part2 = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
 				                      mesh.add(part2);
                                                   }
                                                   container.parent().css('overflow', 'hidden');
+                                                  $('html,body').css('overflow', 'hidden');
                                                   $("html:not(:animated),body:not(:animated)").animate({scrollTop: 0}, 500);
                                                   animate();
 				                  loader.load(options.fire_obj, function (geometry) {
