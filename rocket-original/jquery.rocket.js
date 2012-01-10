@@ -1,7 +1,7 @@
 ;(function($) {
       $.fn.rocket = $.fn.rocket || function(options) {
           var defaults = {
-              base_url: 'https://raw.github.com/moul/jquery-rocket/master/img/',
+              base_url: 'https://raw.github.com/moul/jquery-rocket/master/rocket-original/img/',
               enterOn: 'now',
               delayTime: 5000,
               spread: 3
