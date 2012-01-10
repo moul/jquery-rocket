@@ -134,7 +134,7 @@
                                                                   if (options.fire_particles) {
                                                                       fireParticles = new THREE.Geometry();
                                                                       var pMaterial = new THREE.ParticleBasicMaterial({
-                                                                                                                          size: 80,
+                                                                                                                          size: 60,
                                                                                                                           map: THREE.ImageUtils.loadTexture('tex/fireParticle.png'),
                                                                                                                           blending: THREE.AdditiveBlending,
                                                                                                                           transparent: true,
