@@ -23,6 +23,7 @@
                  y: Math.PI * 1.1,
                  z: Math.PI / 2
              },
+             fire_particles: 1800,
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00,
              onInitCallback: false,
@@ -45,7 +46,7 @@
                                       Detector.addGetWebGLMessage();
                                       return ;
                                   }
-                                  var camera, scene, container, renderer, mesh, light, light1, l1;
+                                  var camera, scene, container, renderer, mesh, light, light1, l1, fireParticles, fireParticleSystem;
                                   var stats = false,
                                   mouseX = 0,
                                   mouseY = 0,
@@ -123,28 +124,43 @@
 
                                                   //animate();
 				                  loader.load(options.fire_obj, function (geometry) {
-				                                  geometry.materials[0].shading = THREE.FlatShading;
-                                                                  mesh2 = new THREE.Object3D();
-                                                                  mesh2.position = mesh.position;
-                                                                  mesh2.rotation = mesh.rotation;
-				                                  mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
-				                                  //scene.add(mesh2);
-
-                                                                  var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: false}));
-				                                  mesh2.add(part1);
-                                                                  if (options.show_wireframes) {
-                                                                      var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
-				                                      mesh2.add(part2);
-                                                                  }
-
-                                                                  pointLight = false;
-                                                                  /*pointLight = new THREE.PointLight(options.fire_color);
-                                                                  pointLight.position = mesh.position;
-                                                                  pointLight.rotation = mesh.rotation;*/
-
-
                                                                   var dummy = new THREE.Object3D();
-
+                                                                  if (options.fire_particles) {
+                                                                      fireParticles = new THREE.Geometry();
+                                                                      var pMaterial = new THREE.ParticleBasicMaterial({
+                                                                                                                          size: 80,
+                                                                                                                          map: THREE.ImageUtils.loadTexture('tex/fireParticle.png'),
+                                                                                                                          blending: THREE.AdditiveBlending,
+                                                                                                                          transparent: true,
+                                                                                                                          vertexColors: true
+                                                                                                                      });
+                                                                      var colors = [];
+                                                                      fireParticles.colors = colors;
+                                                                      for (var i = 0; i < 1800; i++) {
+                                                                          var particle = new THREE.Vertex(new THREE.Vector3(0, 100, 0));
+                                                                          particle.velocity = new THREE.Vector3((Math.random() - 0.5) * 2, -1 * -Math.random(), 0);
+                                                                          fireParticles.vertices.push(particle);
+                                                                          var c = new THREE.Color(Math.random() * 0xffffff);
+                                                                          colors[i] = c;
+                                                                      }
+                                                                      fireParticleSystem = new THREE.ParticleSystem(fireParticles, pMaterial);
+                                                                      //fireParticleSystem.sortParticles = true;
+                                                                      scene.add(fireParticleSystem);
+                                                                  } else {
+				                                      geometry.materials[0].shading = THREE.FlatShading;
+                                                                      mesh2 = new THREE.Object3D();
+                                                                      mesh2.position = mesh.position;
+                                                                      mesh2.rotation = mesh.rotation;
+				                                      mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
+                                                                      var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: false}));
+				                                      mesh2.add(part1);
+                                                                      if (options.show_wireframes) {
+                                                                          var part2 = new THREE.Mesh(geometry, new THREE.Mesh({ color: 0xff0000, opacity: 0.9, shading: THREE.FlatShading, wireframe: true, wireframeLinewidth: 2, transparent: true }));
+				                                          mesh2.add(part2);
+                                                                      }
+                                                                      dummy.add(mesh2);
+                                                                      fireNewTween(mesh2, false, 150);
+                                                                  }
 
                                                                   light1 = new THREE.PointLight(options.orbit_light_color, 5, 300);
                                                                   scene.add(light1);
@@ -154,15 +170,9 @@
                                                                   l1.position = light1.position;
                                                                   scene.add(l1);
 
-
-
-
                                                                   dummy.add(mesh);
-                                                                  dummy.add(mesh2);
-                                                                  //dummy.add(pointLight);
                                                                   scene.add(dummy);
 
-                                                                  fireNewTween(mesh2, pointLight, 150);
                                                                   oscilNewTween(dummy);
 
                                                                   if (options.playSong) {
@@ -172,26 +182,9 @@
                                                                           source.src = options.playSong[i];
                                                                           audio.appendChild(source);
                                                                       }
-                                                                      /*
-                                                                      var frameBufferSize = 4096;
-                                                                      var bufferSize = frameBufferSize / 4;
-                                                                      var peak = new Float32Array(bufferSize);
-                                                                      var fft = new FFT(bufferSize, 44100);
-
-                                                                      audio.addEventListener('loadedmetadata',
-                                                                                             function(event) {
-                                                                                                 audio.mozFrameBufferLength = frameBufferSize;
-                                                                                                 audio.addEventListener('MozAudioAvailable', function(event) {
-                                                                                                                          signal = DSP.getChannel(DSP.MIX, event.frameBuffer);
-                                                                                                                          fft.forward(signal);
-                                                                                                                          //console.dir(fft.spectrum);
-});
-                                                                                             }, false);
-                                                                       //*/
                                                                       audio.volume = options.playSong_volume;
                                                                       audio.loop = 'loop';
                                                                       audio.play();
-                                                                      //$('body').append('<audio src="'+options.playSong+'" autoplay loop></audio>');
                                                                   }
                                                                   animate();
                                                               });
@@ -251,7 +244,7 @@
                                                                 }, false);
                                   }
 
-
+                                  var activeFireParticles = 0;
 			          function animate() {
 				      requestAnimationFrame(animate);
 
@@ -267,6 +260,24 @@
 				      camera.lookAt(scene.position);
 
                                       particleSystem.position.x -= 0.5;
+                                      //console.log(activeFireParticles);
+
+                                      for (var i = 0; i < activeFireParticles; i++) {
+                                          var particle = fireParticles.vertices[i];
+                                          if (particle.position.y < 0 - Math.random() * 100) {
+                                              var pos = particle.position;
+                                              pos.x = 0;
+                                              pos.y = 100;
+                                              pos.z = 0;
+                                              particle.velocity.y = 0;
+                                          }
+                                          particle.velocity.y -= Math.random() * .1;
+                                          particle.position.addSelf(particle.velocity);
+                                      }
+                                      if (activeFireParticles < options.fire_particles) {
+                                          activeFireParticles += 10;
+                                      }
+                                      fireParticleSystem.geometry.__dirtyVertices = true;
 
                                       TWEEN.update();
 
