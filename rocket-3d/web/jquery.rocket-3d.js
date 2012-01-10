@@ -24,6 +24,7 @@
                  z: Math.PI / 2
              },
              fire_particles: 1800,
+             fire_particle_tex: 'tex/fireParticle.png',
              fire_obj: 'obj/rocket3d_flame.js',
              fire_color: 0xFFBB00,
              onInitCallback: false,
@@ -135,7 +136,7 @@
                                                                       fireParticles = new THREE.Geometry();
                                                                       var pMaterial = new THREE.ParticleBasicMaterial({
                                                                                                                           size: 60,
-                                                                                                                          map: THREE.ImageUtils.loadTexture('tex/fireParticle.png'),
+                                                                                                                          map: THREE.ImageUtils.loadTexture(options.fire_particle_tex),
                                                                                                                           blending: THREE.AdditiveBlending,
                                                                                                                           transparent: true,
                                                                                                                           vertexColors: true
