@@ -8,7 +8,7 @@
              far: 10000,
              near: 0.1,
              angle: 40,
-             show_stats: false,
+             show_stats: true,
              stars: 800,
              konami_code: "38,38,40,40,37,39,37,39,66,65",
              show_wireframes: false,
@@ -65,8 +65,8 @@
 				  camera.position.z = options.camera_z_position;
 				  scene = new THREE.Scene();
 
-                                  scene.fog = new THREE.FogExp2(0x888888, 0.0003);
-                                  scene.fog.color.setRGB(0.5, 0.5, 0.5);
+//                                  scene.fog = new THREE.FogExp2(0x888888, 0.0003);
+//                                  scene.fog.color.setRGB(0.5, 0.5, 0.5);
 
 				  var light = new THREE.DirectionalLight(options.light_color);
 				  light.position.set(0, 0, 1).normalize();
@@ -101,12 +101,12 @@
 				  loader.load(options.rocket_obj, function (geometry) {
 				                  geometry.materials[0].shading = THREE.FlatShading;
                                                   mesh = new THREE.Object3D();
-				                  mesh.position.x = -300;
-                                                  mesh.rotation = {
+				                  mesh.position.x = 0;
+/*                                                  mesh.rotation = {
                                                       x: options.rocket_rotation.x,
                                                       y: options.rocket_rotation.y,
                                                       z: options.rocket_rotation.z
-                                                      };
+                                                      };*/
 				                  mesh.scale.x = mesh.scale.y = mesh.scale.z = 150;
 				                  //scene.add(mesh);
 				                  var part1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:THREE.ImageUtils.loadTexture(options.rocket_tex)}));
@@ -125,6 +125,12 @@
                                                   //animate();
 				                  loader.load(options.fire_obj, function (geometry) {
                                                                   var dummy = new THREE.Object3D();
+                                                                  dummy.rotation = {
+                                                                      x: options.rocket_rotation.x,
+                                                                      y: options.rocket_rotation.y,
+                                                                      z: options.rocket_rotation.z
+                                                                  };
+                                                                  dummy.position.x = -250;
                                                                   if (options.fire_particles) {
                                                                       fireParticles = new THREE.Geometry();
                                                                       var pMaterial = new THREE.ParticleBasicMaterial({
@@ -136,21 +142,22 @@
                                                                                                                       });
                                                                       var colors = [];
                                                                       fireParticles.colors = colors;
-                                                                      for (var i = 0; i < 1800; i++) {
-                                                                          var particle = new THREE.Vertex(new THREE.Vector3(0, 100, 0));
-                                                                          particle.velocity = new THREE.Vector3((Math.random() - 0.5) * 2, -1 * -Math.random(), 0);
+                                                                      for (var i = 0; i < options.fire_particles; i++) {
+                                                                          var particle = new THREE.Vertex(new THREE.Vector3(0, 0, 0));
+                                                                          particle.velocity = new THREE.Vector3((Math.random() - 0.5) * 2, -Math.random(), -Math.random() + Math.random() * 2);
+                                                                          //particle.rotation = mesh.rotation;
                                                                           fireParticles.vertices.push(particle);
                                                                           var c = new THREE.Color(Math.random() * 0xffffff);
                                                                           colors[i] = c;
                                                                       }
                                                                       fireParticleSystem = new THREE.ParticleSystem(fireParticles, pMaterial);
-                                                                      //fireParticleSystem.sortParticles = true;
-                                                                      scene.add(fireParticleSystem);
+                                                                      fireParticleSystem.sortParticles = true;
+                                                                      dummy.add(fireParticleSystem);
                                                                   } else {
 				                                      geometry.materials[0].shading = THREE.FlatShading;
                                                                       mesh2 = new THREE.Object3D();
                                                                       mesh2.position = mesh.position;
-                                                                      mesh2.rotation = mesh.rotation;
+                                                                      //mesh2.rotation = mesh.rotation;
 				                                      mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = 150;
                                                                       var part1 = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: options.fire_color, opacity: 0.9, overdraw: false}));
 				                                      mesh2.add(part1);
@@ -215,9 +222,9 @@
                                   function oscilNewTween(mesh) {
                                       new TWEEN.Tween(mesh.rotation)
                                           .to({
-                                                  x: Math.random() * Math.PI / 15,
-                                                  y: Math.random() * Math.PI / 20,
-                                                  z: Math.random() * Math.PI / 15
+                                                  x: options.rocket_rotation.x + Math.random() * Math.PI / 15,
+                                                  y: options.rocket_rotation.y + Math.random() * Math.PI / 20,
+                                                  z: options.rocket_rotation.z + Math.random() * Math.PI / 15
                                               }, 930)
                                           .easing(TWEEN.Easing.Linear.EaseNone)
                                           //.easing(TWEEN.Easing.Circular.EaseInOut)
@@ -262,22 +269,24 @@
                                       particleSystem.position.x -= 0.5;
                                       //console.log(activeFireParticles);
 
-                                      for (var i = 0; i < activeFireParticles; i++) {
-                                          var particle = fireParticles.vertices[i];
-                                          if (particle.position.y < 0 - Math.random() * 100) {
-                                              var pos = particle.position;
-                                              pos.x = 0;
-                                              pos.y = 100;
-                                              pos.z = 0;
-                                              particle.velocity.y = 0;
+                                      if (options.fire_particles) {
+                                          for (var i = 0; i < activeFireParticles; i++) {
+                                              var particle = fireParticles.vertices[i];
+                                              if (particle.position.y < 0 - Math.random() * 100 - 200) {
+                                                  var pos = particle.position;
+                                                  pos.x = 0;
+                                                  pos.y = 0;
+                                                  pos.z = 0;
+                                                  particle.velocity.y = 0;
+                                              }
+                                              particle.velocity.y -= Math.random() * .1;
+                                              particle.position.addSelf(particle.velocity);
                                           }
-                                          particle.velocity.y -= Math.random() * .1;
-                                          particle.position.addSelf(particle.velocity);
+                                          if (activeFireParticles < options.fire_particles) {
+                                              activeFireParticles += 10;
+                                          }
+                                          fireParticleSystem.geometry.__dirtyVertices = true;
                                       }
-                                      if (activeFireParticles < options.fire_particles) {
-                                          activeFireParticles += 10;
-                                      }
-                                      fireParticleSystem.geometry.__dirtyVertices = true;
 
                                       TWEEN.update();
 
