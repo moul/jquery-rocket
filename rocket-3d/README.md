@@ -1,7 +1,7 @@
 Demo
 ====
 
-* (http://moul.github.com/jquery-rocket-3d/)
+* http://moul.github.com/jquery-rocket-3d/
 
 Authors
 =======
