@@ -6,7 +6,7 @@ Author
 Demo
 ====
 
-* [http://moul.github.com/jquery.rocket.html](http://moul.github.com/jquery.rocket.html)
+* [http://moul.github.com/jquery-rocket/](http://moul.github.com/jquery-rocket/)
 
 Inspired by
 ===========
