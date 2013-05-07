@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to our world</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="https://raw.github.com/moul/jquery-rocket/master/rocket-original/jquery.rocket.js"></script>
+    <p><a id="clickme" href="#">click me !</a></p>
+    <p>or: <span>↑ ↑ ↓ ↓ ← → ← → B A</span></p>
+    <script type="text/javascript">
+      //$(window).rocket({enterOn: 'now', base_url: 'img/'});
+      //$(window).rocket({enterOn: 'timer', delayTime: 2000, base_url: 'img/'});
+      $(window).rocket({enterOn: 'konami-code', base_url: 'img/'});
+      $('#clickme').rocket({enterOn: 'click', base_url: 'img/'});
+    </script>
+    <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28081516-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script>
+  </body>
+</html>
