@@ -1,6 +1,8 @@
 JQUERY-ROCKET
 =============
 
+[![GuardRails badge](https://badges.production.guardrails.io/moul/jquery-rocket.svg)](https://www.guardrails.io)
+
 by Manfred Touron
 
 Rocket versions :
